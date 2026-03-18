@@ -5,9 +5,9 @@ from pathlib import Path
 
 import typer
 
-from nexus.core.merger import ConfigMerger
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import console, print_error, print_info, print_success
+from confhub.core.merger import ConfigMerger
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import console, print_error, print_info, print_success
 
 # resolve 하위 서브커맨드가 없으므로 app 객체는 유지하되 실제 로직은 do_resolve로 분리
 app = typer.Typer(help="설정 병합 빌드")

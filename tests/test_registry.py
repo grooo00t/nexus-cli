@@ -2,19 +2,19 @@
 
 import pytest
 
-from nexus.core.registry import Registry, RegistryNotFoundError
+from confhub.core.registry import Registry, RegistryNotFoundError
 
 
 @pytest.fixture
 def tmp_registry(tmp_path):
     """임시 디렉토리에 Registry 생성"""
-    return Registry(tmp_path / "nexus")
+    return Registry(tmp_path / "confhub")
 
 
 def test_registry_paths(tmp_registry):
     """경로 프로퍼티 검증"""
     base = tmp_registry.base_path
-    assert tmp_registry.config_path == base / "nexus.config.yaml"
+    assert tmp_registry.config_path == base / "confhub.config.yaml"
     assert tmp_registry.root_path == base / "root"
     assert tmp_registry.apps_path == base / "apps"
     assert tmp_registry.resolved_path == base / "resolved"

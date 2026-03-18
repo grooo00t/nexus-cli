@@ -2,10 +2,10 @@
 
 import typer
 
-from nexus.core.linker import Linker
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import console, print_error
-from nexus.utils.git import GitRepo
+from confhub.core.linker import Linker
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import console, print_error
+from confhub.utils.git import GitRepo
 
 
 def _get_registry() -> Registry:
@@ -118,7 +118,7 @@ def do_status(
     console.print(
         Panel(
             content,
-            title="Nexus Registry Status",
+            title="ConfHub Registry Status",
             border_style="blue",
         )
     )

@@ -6,17 +6,17 @@ from pathlib import Path
 
 import typer
 
-from nexus.core.agents import get_agent
-from nexus.core.merger import ConfigMerger
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import (
+from confhub.core.agents import get_agent
+from confhub.core.merger import ConfigMerger
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import (
     console,
     print_error,
     print_info,
     print_success,
     print_warning,
 )
-from nexus.utils.git import GitError, GitRepo
+from confhub.utils.git import GitError, GitRepo
 
 submodule_app = typer.Typer(help="Git Submodule로 설정 적용")
 
@@ -79,9 +79,7 @@ def _apply_sparse_checkout(submodule_path: Path, app_name: str) -> None:
     _run_git(["sparse-checkout", "set", f"resolved/{app_name}"], cwd=submodule_path)
 
 
-def _create_symlinks(
-    project_path: Path, app_name: str, agent_ids: list[str]
-) -> list[str]:
+def _create_symlinks(project_path: Path, app_name: str, agent_ids: list[str]) -> list[str]:
     """에이전트별 상대 경로 심볼릭 링크 생성. 생성된 link_target 목록 반환."""
     created: list[str] = []
     for agent_id in agent_ids:
@@ -98,12 +96,7 @@ def _create_symlinks(
             continue
 
         submodule_target_abs = (
-            project_path
-            / SUBMODULE_DIR
-            / "resolved"
-            / app_name
-            / agent_id
-            / agent_cfg.link_target
+            project_path / SUBMODULE_DIR / "resolved" / app_name / agent_id / agent_cfg.link_target
         )
 
         link_path.parent.mkdir(parents=True, exist_ok=True)
@@ -129,7 +122,7 @@ def submodule_add(
         None, "--agent", help="특정 에이전트만 적용 (쉼표 구분: claude,gemini)"
     ),
 ):
-    """프로젝트에 nexus 설정을 git submodule + sparse-checkout으로 적용합니다."""
+    """프로젝트에 confhub 설정을 git submodule + sparse-checkout으로 적용합니다."""
     try:
         registry = _get_registry()
     except RegistryNotFoundError as exc:
@@ -145,8 +138,7 @@ def submodule_add(
     remote_url = nexus_repo.get_remote_url()
     if not remote_url:
         print_error(
-            "Registry의 원격 레포가 설정되지 않았습니다. "
-            "'nxs sync remote set <url>'로 설정하세요."
+            "Registry의 원격 레포가 설정되지 않았습니다. 'nxs sync remote set <url>'로 설정하세요."
         )
         raise typer.Exit(1)
 
@@ -208,7 +200,7 @@ def submodule_add(
         try:
             _run_git(["add"] + created_links, cwd=project_path)
             _run_git(
-                ["commit", "-m", f"chore: add nexus submodule for {app_name}"],
+                ["commit", "-m", f"chore: add confhub submodule for {app_name}"],
                 cwd=project_path,
             )
             print_info(f"\n  심볼릭 링크 {len(created_links)}개를 프로젝트 레포에 커밋했습니다.")
@@ -291,7 +283,7 @@ def submodule_remove(
         False, "--keep-submodule", help="submodule은 유지하고 심볼릭 링크만 제거"
     ),
 ):
-    """프로젝트에서 nexus submodule 설정을 제거합니다."""
+    """프로젝트에서 confhub submodule 설정을 제거합니다."""
     try:
         registry = _get_registry()
     except RegistryNotFoundError as exc:

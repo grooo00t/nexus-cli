@@ -4,9 +4,9 @@ from pathlib import Path
 
 import typer
 
-from nexus.core.linker import Linker, LinkerError
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import (
+from confhub.core.linker import Linker, LinkerError
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import (
     console,
     make_table,
     print_error,

@@ -1,4 +1,4 @@
-# Nexus CLI (`nxs`)
+# ConfHub CLI (`nxs`)
 
 AI 에이전트(Claude, Gemini, Codex, Cursor, Copilot) 설정을 팀 전체에 중앙 관리하는 CLI 프레임워크.
 
@@ -6,11 +6,11 @@ AI 에이전트(Claude, Gemini, Codex, Cursor, Copilot) 설정을 팀 전체에 
 
 ```mermaid
 graph TD
-    R["~/.nexus (Registry)"]
+    R["~/.confhub (Registry)"]
     ROOT["root/agents/claude/\n팀 공통 기본 설정"]
     APP["apps/api-server/agents/claude/\n프로젝트별 설정"]
     RESOLVED["resolved/api-server/claude/\n병합 결과 (자동 생성)"]
-    REMOTE["nexus-config\n(private git repo)"]
+    REMOTE["confhub-config\n(private git repo)"]
     PROJECT["api-server 프로젝트\n.nexus-config/ (submodule)"]
     SYMLINK[".claude/ 심볼릭 링크"]
 
@@ -80,8 +80,8 @@ nxs link web-frontend --target /workspace/my-project
 ```mermaid
 sequenceDiagram
     participant A as 설정 관리자
-    participant R as ~/.nexus (Registry)
-    participant G as nexus-config (git)
+    participant R as ~/.confhub (Registry)
+    participant G as confhub-config (git)
     participant T as 팀원
 
     A->>R: nxs app add / nxs agent add
@@ -103,13 +103,13 @@ nxs sync pull && nxs resolve --all
 
 ### Git Submodule 방식 (sparse-checkout으로 앱 설정만 적용)
 
-nexus-config 레포 전체가 아닌 해당 앱의 `resolved/<app>/` 만 체크아웃합니다.
+confhub-config 레포 전체가 아닌 해당 앱의 `resolved/<app>/` 만 체크아웃합니다.
 
 ```mermaid
 sequenceDiagram
     participant A as 설정 관리자
-    participant N as ~/.nexus (Registry)
-    participant G as nexus-config (git)
+    participant N as ~/.confhub (Registry)
+    participant G as confhub-config (git)
     participant P as api-server 프로젝트
     participant T as 팀원
 
@@ -130,12 +130,12 @@ sequenceDiagram
 
 ```bash
 # 1. Registry를 private 레포와 연결
-nxs sync remote set https://github.com/your-team/nexus-config.git
+nxs sync remote set https://github.com/your-team/confhub-config.git
 
 # 2. 앱 및 에이전트 설정 준비
 nxs app add api-server
 nxs agent add claude --app api-server
-# ~/.nexus/apps/api-server/agents/claude/ 에서 직접 파일 편집
+# ~/.confhub/apps/api-server/agents/claude/ 에서 직접 파일 편집
 
 # 3. 프로젝트에 submodule 적용
 #    resolve → remote push → git submodule add → sparse-checkout 자동 수행
@@ -146,7 +146,7 @@ nxs submodule add api-server --target /workspace/api-server
 
 ```
 api-server/
-├── .nexus-config/    ← nexus-config submodule (resolved/api-server/ 만 sparse-checkout)
+├── .nexus-config/    ← confhub-config submodule (resolved/api-server/ 만 sparse-checkout)
 ├── .claude/          ← symlink → .nexus-config/resolved/api-server/claude/.claude/
 ├── .gemini/          ← symlink → .nexus-config/resolved/api-server/gemini/.gemini/
 └── ...
@@ -169,7 +169,7 @@ nxs submodule init api-server
 
 ```mermaid
 flowchart LR
-    E["파일 직접 편집\n~/.nexus/apps/api-server/..."]
+    E["파일 직접 편집\n~/.confhub/apps/api-server/..."]
     S["nxs submodule add api-server\n--target ./api-server"]
     GP["git push\n(프로젝트 레포)"]
     T["팀원: git pull\n+ git submodule update\n+ nxs submodule init api-server"]
@@ -178,9 +178,9 @@ flowchart LR
 ```
 
 ```bash
-# ~/.nexus/apps/api-server/agents/claude/ 파일 직접 수정 후
+# ~/.confhub/apps/api-server/agents/claude/ 파일 직접 수정 후
 nxs submodule add api-server --target /workspace/api-server
-# resolve → nexus push → submodule ref + 심볼릭 링크 커밋
+# resolve → confhub push → submodule ref + 심볼릭 링크 커밋
 
 # 팀원은 프로젝트에서 반영
 git pull && git submodule update

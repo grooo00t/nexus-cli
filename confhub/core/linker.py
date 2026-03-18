@@ -5,8 +5,8 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
-from nexus.core.agents import SUPPORTED_AGENTS, get_agent
-from nexus.core.merger import ConfigMerger
+from confhub.core.agents import SUPPORTED_AGENTS, get_agent
+from confhub.core.merger import ConfigMerger
 
 
 class LinkerError(Exception):
@@ -96,7 +96,7 @@ class Linker:
                     link_path.unlink()
                 else:
                     # 실제 파일/폴더면 백업
-                    backup_dir = project_path / ".nexus-backup"
+                    backup_dir = project_path / ".confhub-backup"
                     backup_dir.mkdir(exist_ok=True)
                     backup_path = backup_dir / link_path.name
                     shutil.move(str(link_path), str(backup_path))

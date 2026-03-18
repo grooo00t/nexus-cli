@@ -1,14 +1,14 @@
 """nxs install 명령어 - Git URL에서 Registry 설치"""
 
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import (
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import (
     console,
     print_error,
     print_info,
     print_success,
     print_warning,
 )
-from nexus.utils.git import GitError, GitRepo
+from confhub.utils.git import GitError, GitRepo
 
 
 def do_install(
@@ -67,7 +67,7 @@ def do_install(
     git_repo = GitRepo(target_path)
 
     if not git_repo.is_git_repo():
-        temp_clone = target_path.parent / "_nexus_clone_tmp"
+        temp_clone = target_path.parent / "_confhub_clone_tmp"
         try:
             temp_git = GitRepo(temp_clone)
             temp_git.clone(from_repo, temp_clone)
@@ -89,18 +89,18 @@ def do_install(
             print_error(str(exc))
             raise typer.Exit(1)
 
-    # ── [3] nexus.config.yaml 확인 ────────────────────────────────────────────
-    print_info("[2/4] nexus.config.yaml 확인...")
+    # ── [3] confhub.config.yaml 확인 ────────────────────────────────────────────
+    print_info("[2/4] confhub.config.yaml 확인...")
     registry = Registry(target_path)
     if not registry.is_initialized():
         print_error(
-            f"클론된 레포에 nexus.config.yaml이 없습니다: {target_path}\n"
-            "올바른 Nexus Registry 레포인지 확인하세요."
+            f"클론된 레포에 confhub.config.yaml이 없습니다: {target_path}\n"
+            "올바른 ConfHub Registry 레포인지 확인하세요."
         )
         raise typer.Exit(1)
 
-    # ── [4] ~/.nexusrc 등록 ───────────────────────────────────────────────────
-    print_info("[3/4] ~/.nexusrc에 경로 등록...")
+    # ── [4] ~/.confhubrc 등록 ───────────────────────────────────────────────────
+    print_info("[3/4] ~/.confhubrc에 경로 등록...")
     Registry.save_nexusrc(target_path)
 
     # ── [5] resolve 실행 ──────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ def do_install(
         target_apps = app_list
 
     if target_apps:
-        from nexus.core.merger import ConfigMerger
+        from confhub.core.merger import ConfigMerger
 
         merger = ConfigMerger(registry.base_path)
         for app_name in target_apps:

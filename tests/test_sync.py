@@ -3,17 +3,17 @@
 import pytest
 from typer.testing import CliRunner
 
-from nexus.cli import app
-from nexus.core.registry import Registry
-from nexus.utils.git import GitRepo
+from confhub.cli import app
+from confhub.core.registry import Registry
+from confhub.utils.git import GitRepo
 
 runner = CliRunner()
 
 
 @pytest.fixture
 def initialized_registry(tmp_path, monkeypatch):
-    nexusrc = tmp_path / ".nexusrc"
-    registry_path = tmp_path / "nexus"
+    nexusrc = tmp_path / ".confhubrc"
+    registry_path = tmp_path / "confhub"
     monkeypatch.setattr(Registry, "NEXUSRC_PATH", nexusrc)
     monkeypatch.setattr(Registry, "DEFAULT_PATH", registry_path)
     runner.invoke(app, ["init"])
@@ -96,7 +96,9 @@ def test_status_shows_registry_info(initialized_registry):
     result = runner.invoke(app, ["status"])
     assert result.exit_code == 0
     # Registry 경로가 출력에 포함
-    assert str(initialized_registry.base_path) in result.output or "nexus" in result.output.lower()
+    assert (
+        str(initialized_registry.base_path) in result.output or "confhub" in result.output.lower()
+    )
 
 
 def test_status_with_links(initialized_registry):
@@ -110,7 +112,7 @@ def test_status_git_info(initialized_registry):
     registry_path = initialized_registry.base_path
     repo = GitRepo(registry_path)
     repo.init()
-    repo.set_remote("https://github.com/test/nexus-config")
+    repo.set_remote("https://github.com/test/confhub-config")
 
     result = runner.invoke(app, ["status"])
     assert result.exit_code == 0

@@ -34,7 +34,7 @@ jobs:
           ruff format --check .
 
       - name: Run ty (type check)
-        run: ty check nexus/
+        run: ty check confhub/
 
   test:
     name: Test (Python ${{ matrix.python-version }} / ${{ matrix.os }})
@@ -60,7 +60,7 @@ jobs:
         run: uv pip install -e ".[dev]" --system
 
       - name: Run tests
-        run: pytest tests/ -v --cov=nexus --cov-report=term-missing
+        run: pytest tests/ -v --cov=confhub --cov-report=term-missing
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4

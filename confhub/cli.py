@@ -1,19 +1,19 @@
-"""Nexus CLI - 진입점 모듈"""
+"""ConfHub CLI - 진입점 모듈"""
 
 from pathlib import Path
 
 import typer
 
-from nexus import __version__
-from nexus.commands import agent as agent_cmd
-from nexus.commands import app as app_cmd
-from nexus.commands.link import link_app
-from nexus.commands.submodule import submodule_app
-from nexus.commands.sync import sync_app
+from confhub import __version__
+from confhub.commands import agent as agent_cmd
+from confhub.commands import app as app_cmd
+from confhub.commands.link import link_app
+from confhub.commands.submodule import submodule_app
+from confhub.commands.sync import sync_app
 
 app = typer.Typer(
     name="nxs",
-    help="Nexus CLI - AI 에이전트 설정 관리",
+    help="ConfHub CLI - AI 에이전트 설정 관리",
     add_completion=False,
 )
 
@@ -27,7 +27,7 @@ app.add_typer(sync_app, name="sync")
 def version_callback(value: bool):
     """버전 정보 출력 콜백"""
     if value:
-        typer.echo(f"nexus-cli version: {__version__}")
+        typer.echo(f"confhub-cli version: {__version__}")
         raise typer.Exit()
 
 
@@ -42,7 +42,7 @@ def main(
         is_eager=True,
     ),
 ):
-    """Nexus CLI - AI 에이전트 설정 중앙 관리 프레임워크"""
+    """ConfHub CLI - AI 에이전트 설정 중앙 관리 프레임워크"""
 
 
 @app.command("init")
@@ -50,8 +50,8 @@ def init_command(
     path: Path | None = typer.Option(None, "--path", "-p", help="Registry 경로"),
     from_repo: str | None = typer.Option(None, "--from-repo", help="Git 레포 URL에서 초기화"),
 ):
-    """Nexus Registry를 초기화합니다."""
-    from nexus.commands.init import do_init
+    """ConfHub Registry를 초기화합니다."""
+    from confhub.commands.init import do_init
 
     do_init(path, from_repo)
 
@@ -63,7 +63,7 @@ def resolve_command(
     dry_run: bool = typer.Option(False, "--dry-run", help="결과 미리보기 (파일 미생성)"),
 ):
     """설정을 병합하여 resolved 디렉토리에 저장합니다."""
-    from nexus.commands.resolve import do_resolve
+    from confhub.commands.resolve import do_resolve
 
     do_resolve(app_name, all_apps, dry_run)
 
@@ -79,7 +79,7 @@ def unlink_command(
     ),
 ):
     """프로젝트의 심볼릭 링크를 해제합니다."""
-    from nexus.commands.link import do_unlink
+    from confhub.commands.link import do_unlink
 
     do_unlink(app_name, target, agent)
 
@@ -90,7 +90,7 @@ def status_command(
     with_links: bool = typer.Option(False, "--with-links", help="링크 상태 포함"),
 ):
     """Registry 상태를 표시합니다."""
-    from nexus.commands.status import do_status
+    from confhub.commands.status import do_status
 
     do_status(app_name, with_links)
 
@@ -104,7 +104,7 @@ def install_command(
     ),
 ):
     """Git 레포에서 Registry를 설치합니다."""
-    from nexus.commands.install import do_install
+    from confhub.commands.install import do_install
 
     do_install(from_repo, verify, apps)
 

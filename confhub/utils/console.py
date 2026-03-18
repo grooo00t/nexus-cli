@@ -1,4 +1,4 @@
-"""Nexus CLI - rich 출력 헬퍼 모듈"""
+"""ConfHub CLI - rich 출력 헬퍼 모듈"""
 
 from rich.console import Console
 from rich.panel import Panel

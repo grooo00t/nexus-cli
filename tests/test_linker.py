@@ -4,13 +4,13 @@ import shutil
 
 import pytest
 
-from nexus.core.linker import Linker, LinkerError
+from confhub.core.linker import Linker, LinkerError
 
 
 @pytest.fixture
 def registry_with_resolved(tmp_path):
     """resolved 폴더가 있는 Registry"""
-    base = tmp_path / "nexus"
+    base = tmp_path / "confhub"
 
     # resolved/web-frontend/claude/.claude/
     resolved_claude = base / "resolved" / "web-frontend" / "claude" / ".claude"
@@ -84,7 +84,7 @@ def test_link_backs_up_existing(registry_with_resolved, tmp_path):
     linker.link("web-frontend", project, agents=["claude"])
 
     # 백업 존재 확인
-    backup = project / ".nexus-backup" / ".claude"
+    backup = project / ".confhub-backup" / ".claude"
     assert backup.exists()
 
 

@@ -3,8 +3,8 @@
 import pytest
 from typer.testing import CliRunner
 
-from nexus.cli import app
-from nexus.core.registry import Registry
+from confhub.cli import app
+from confhub.core.registry import Registry
 
 runner = CliRunner()
 
@@ -12,8 +12,8 @@ runner = CliRunner()
 @pytest.fixture
 def registry_with_app(tmp_path, monkeypatch):
     """앱과 에이전트가 있는 Registry"""
-    nexusrc = tmp_path / ".nexusrc"
-    registry_path = tmp_path / "nexus"
+    nexusrc = tmp_path / ".confhubrc"
+    registry_path = tmp_path / "confhub"
     monkeypatch.setattr(Registry, "NEXUSRC_PATH", nexusrc)
     monkeypatch.setattr(Registry, "DEFAULT_PATH", registry_path)
 

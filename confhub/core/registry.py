@@ -1,4 +1,4 @@
-"""Nexus Registry - 파일 경로 및 설정 접근 핵심 모듈"""
+"""ConfHub Registry - 파일 경로 및 설정 접근 핵심 모듈"""
 
 from pathlib import Path
 
@@ -12,15 +12,15 @@ class RegistryNotFoundError(Exception):
 
 
 class Registry:
-    """Nexus Registry 관리 클래스
+    """ConfHub Registry 관리 클래스
 
     base_path를 주입받아 테스트 용이성을 확보합니다.
     모든 파일 경로와 설정 접근을 중앙에서 관리합니다.
     """
 
-    DEFAULT_PATH = Path.home() / ".nexus"
-    NEXUSRC_PATH = Path.home() / ".nexusrc"
-    CONFIG_FILE = "nexus.config.yaml"
+    DEFAULT_PATH = Path.home() / ".confhub"
+    NEXUSRC_PATH = Path.home() / ".confhubrc"
+    CONFIG_FILE = "confhub.config.yaml"
 
     def __init__(self, base_path: Path):
         self.base_path = Path(base_path)
@@ -70,18 +70,18 @@ class Registry:
         """초기화 여부 확인, 초기화되지 않은 경우 예외 발생"""
         if not self.is_initialized():
             raise RegistryNotFoundError(
-                f"Nexus Registry가 초기화되지 않았습니다: {self.base_path}\n"
+                f"ConfHub Registry가 초기화되지 않았습니다: {self.base_path}\n"
                 "'nxs init' 명령어로 초기화하세요."
             )
 
     def load_config(self) -> dict:
-        """nexus.config.yaml 로드"""
+        """confhub.config.yaml 로드"""
         self.require_initialized()
         with open(self.config_path, encoding="utf-8") as f:
             return yaml.safe_load(f) or {}
 
     def save_config(self, config: dict) -> None:
-        """nexus.config.yaml 저장"""
+        """confhub.config.yaml 저장"""
         with open(self.config_path, "w", encoding="utf-8") as f:
             yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
 
@@ -131,7 +131,7 @@ class Registry:
 
     @classmethod
     def get_default(cls) -> "Registry":
-        """~/.nexusrc에서 경로를 읽어 기본 Registry 반환"""
+        """~/.confhubrc에서 경로를 읽어 기본 Registry 반환"""
         if cls.NEXUSRC_PATH.exists():
             with open(cls.NEXUSRC_PATH, encoding="utf-8") as f:
                 data = yaml.safe_load(f) or {}
@@ -142,6 +142,6 @@ class Registry:
 
     @classmethod
     def save_nexusrc(cls, registry_path: Path) -> None:
-        """~/.nexusrc에 Registry 경로 저장"""
+        """~/.confhubrc에 Registry 경로 저장"""
         with open(cls.NEXUSRC_PATH, "w", encoding="utf-8") as f:
             yaml.dump({"registry_path": str(registry_path)}, f)

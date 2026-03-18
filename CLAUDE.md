@@ -1,4 +1,4 @@
-# Nexus CLI
+# ConfHub CLI
 
 AI 에이전트(Claude, Gemini, Codex, Cursor, Copilot) 설정을 중앙에서 관리하고 프로젝트별 심볼릭 링크로 적용하는 CLI 프레임워크. CLI 명령어: `nxs`.
 
@@ -12,21 +12,21 @@ uv sync --extra dev   # 개발 의존성 포함
 # 테스트 실행
 uv run pytest
 uv run pytest tests/test_registry.py  # 특정 파일
-uv run pytest -v --cov=nexus           # 커버리지 포함
+uv run pytest -v --cov=confhub           # 커버리지 포함
 
 # CLI 실행
 uv run nxs --help
 
 # 린트/타입 검사
 uv tool run ruff check .
-uv tool run ty check nexus/
+uv tool run ty check confhub/
 ```
 
 ## 핵심 개념
 
 | 개념 | 설명 |
 |------|------|
-| **Registry** | `~/.nexus` - 설정의 중앙 저장소. `Registry(base_path)`로 주입 |
+| **Registry** | `~/.confhub` - 설정의 중앙 저장소. `Registry(base_path)`로 주입 |
 | **Root Config** | `root/agents/<agent>/` - 모든 앱이 상속하는 기본 설정 |
 | **App** | `apps/<app>/` - 프로젝트 단위 설정 묶음. Root를 상속·오버라이드 |
 | **Resolved** | `resolved/<app>/<agent>/` - root + app 병합 결과 (자동 생성) |
@@ -35,8 +35,8 @@ uv tool run ty check nexus/
 ## Registry 디렉토리 구조
 
 ```
-~/.nexus/
-├── nexus.config.yaml
+~/.confhub/
+├── confhub.config.yaml
 ├── root/agents/
 │   └── claude/
 │       ├── agent.config.yaml
@@ -52,7 +52,7 @@ uv tool run ty check nexus/
 │               └── .claude/
 │                   ├── CLAUDE.md
 │                   └── settings.json
-├── resolved/          # nxs resolve로 자동 생성, 레포에 커밋 대상
+├── resolved/          # .gitignore 대상, nxs resolve로 자동 생성
 │   └── web-frontend/
 │       └── claude/
 │           └── .claude/
@@ -76,12 +76,10 @@ uv tool run ty check nexus/
 nxs init [--path PATH] [--from-repo URL]
 nxs app add <name> / list / show <name> / remove <name>
 nxs agent add <agent> --app <app>|--root
-nxs agent show/list/remove <agent> --app <app>|--root
+nxs agent edit/show/list/remove <agent> --app <app>|--root
 nxs resolve <app> / --all / --dry-run
 nxs link <app> [--target PATH] [--agent claude,gemini]
 nxs unlink <app>
-nxs submodule add <app> [--target PATH] [--agent claude,gemini]
-nxs submodule remove <app> [--target PATH] [--agent claude,gemini] [--keep-submodule]
 nxs sync push [--message MSG] / pull / remote set <url>
 nxs status [--app NAME] [--with-links]
 nxs install [--from-repo URL] [--verify] [--apps app1,app2]

@@ -21,7 +21,7 @@
 ```bash
 uv tool run ruff check . --fix   # import 정렬, 미사용 import 등 자동 수정
 uv tool run ruff format .        # 포맷 적용
-uv tool run ty check nexus/      # 타입 오류 확인
+uv tool run ty check confhub/      # 타입 오류 확인
 ```
 
 커밋 전 위 세 명령이 오류 없이 통과해야 한다.

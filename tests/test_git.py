@@ -1,6 +1,6 @@
 """GitRepo 단위 테스트"""
 
-from nexus.utils.git import GitRepo
+from confhub.utils.git import GitRepo
 
 
 def test_init_and_is_git_repo(tmp_path):

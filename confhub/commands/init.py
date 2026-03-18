@@ -1,12 +1,12 @@
-"""nxs init 명령어 - Nexus Registry 초기화"""
+"""nxs init 명령어 - ConfHub Registry 초기화"""
 
 import json
 from pathlib import Path
 
 import yaml
 
-from nexus.core.registry import Registry
-from nexus.utils.console import (
+from confhub.core.registry import Registry
+from confhub.utils.console import (
     console,
     print_error,
     print_info,
@@ -16,11 +16,11 @@ from nexus.utils.console import (
 
 # ── 템플릿 상수 ────────────────────────────────────────────────────────────────
 
-NEXUS_CONFIG_TEMPLATE = {
+CONFHUB_CONFIG_TEMPLATE = {
     "version": "1.0.0",
     "registry": {
-        "name": "my-nexus",
-        "description": "Nexus AI 에이전트 설정 Registry",
+        "name": "my-confhub",
+        "description": "ConfHub 에이전트 설정 Registry",
     },
     "remote": {
         "url": None,
@@ -95,7 +95,7 @@ def do_init(path: Path | None, from_repo: str | None) -> None:
         return
 
     try:
-        console.print(f"\n[bold blue]Nexus Registry 초기화[/bold blue]: {registry_path}\n")
+        console.print(f"\n[bold blue]ConfHub Registry 초기화[/bold blue]: {registry_path}\n")
 
         # ── [1/5] 디렉토리 구조 생성 ─────────────────────────────────────────
         print_info("[1/5] 디렉토리 구조 생성...")
@@ -104,11 +104,11 @@ def do_init(path: Path | None, from_repo: str | None) -> None:
         registry.resolved_path.mkdir(parents=True, exist_ok=True)
         registry.links_path.mkdir(parents=True, exist_ok=True)
 
-        # ── [2/5] nexus.config.yaml 생성 ─────────────────────────────────────
-        print_info("[2/5] nexus.config.yaml 생성...")
+        # ── [2/5] confhub.config.yaml 생성 ─────────────────────────────────────
+        print_info("[2/5] confhub.config.yaml 생성...")
         with open(registry.config_path, "w", encoding="utf-8") as f:
             yaml.dump(
-                NEXUS_CONFIG_TEMPLATE,
+                CONFHUB_CONFIG_TEMPLATE,
                 f,
                 default_flow_style=False,
                 allow_unicode=True,
@@ -137,8 +137,8 @@ def do_init(path: Path | None, from_repo: str | None) -> None:
         with open(registry.links_file, "w", encoding="utf-8") as f:
             json.dump({}, f)
 
-        # ── [5/5] ~/.nexusrc 등록 ─────────────────────────────────────────────
-        print_info("[5/5] ~/.nexusrc에 경로 등록...")
+        # ── [5/5] ~/.confhubrc 등록 ─────────────────────────────────────────────
+        print_info("[5/5] ~/.confhubrc에 경로 등록...")
         Registry.save_nexusrc(registry_path)
 
         console.print()

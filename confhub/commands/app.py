@@ -6,8 +6,8 @@ import typer
 import yaml
 from rich.panel import Panel
 
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import (
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import (
     console,
     make_table,
     print_error,

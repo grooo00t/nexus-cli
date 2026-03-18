@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-nxs = "nexus.cli:app"
+nxs = "confhub.cli:app"
 
 [project.optional-dependencies]
 dev = [
@@ -27,14 +27,14 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["nexus"]
+packages = ["confhub"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v"
 
 [tool.coverage.run]
-source = ["nexus"]
+source = ["confhub"]
 omit = ["tests/*"]
 
 [tool.ruff]
@@ -46,4 +46,4 @@ select = ["E", "F", "I", "UP"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["nexus"]
+known-first-party = ["confhub"]

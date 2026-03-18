@@ -2,15 +2,15 @@
 
 import typer
 
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import (
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import (
     console,
     print_error,
     print_info,
     print_success,
     print_warning,
 )
-from nexus.utils.git import GitError, GitRepo
+from confhub.utils.git import GitError, GitRepo
 
 sync_app = typer.Typer(help="Git 동기화")
 remote_app = typer.Typer(help="remote 설정")

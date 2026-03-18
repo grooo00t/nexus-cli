@@ -8,9 +8,9 @@ import yaml
 from rich.panel import Panel
 from rich.syntax import Syntax
 
-from nexus.core.agents import get_agent
-from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.utils.console import (
+from confhub.core.agents import get_agent
+from confhub.core.registry import Registry, RegistryNotFoundError
+from confhub.utils.console import (
     console,
     make_table,
     print_error,
@@ -265,7 +265,6 @@ def agent_show(
             lang = lang_map.get(ext, "text")
             file_syntax = Syntax(content, lang, theme="monokai", line_numbers=True)
             console.print(Panel(file_syntax, title=f"파일: {rel_path}", style="cyan"))
-
 
 
 @app.command("remove")

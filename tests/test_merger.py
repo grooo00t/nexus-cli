@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from nexus.core.merger import (
+from confhub.core.merger import (
     ConfigMerger,
     deep_merge,
     get_merge_strategy,
@@ -133,7 +133,7 @@ def test_get_merge_strategy_explicit():
 @pytest.fixture
 def registry_with_data(tmp_path):
     """테스트용 Registry 데이터 구성"""
-    base = tmp_path / "nexus"
+    base = tmp_path / "confhub"
 
     # root/agents/claude/.claude/
     root_claude = base / "root" / "agents" / "claude" / ".claude"
