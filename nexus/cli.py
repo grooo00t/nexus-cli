@@ -3,12 +3,15 @@ from pathlib import Path
 from typing import Optional
 import typer
 from nexus import __version__
+from nexus.commands import app as app_cmd
 
 app = typer.Typer(
     name="nxs",
     help="Nexus CLI - AI 에이전트 설정 관리",
     add_completion=False,
 )
+
+app.add_typer(app_cmd.app, name="app")
 
 
 def version_callback(value: bool):
