@@ -11,7 +11,7 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 
 from nexus.core.registry import Registry, RegistryNotFoundError
-from nexus.core.agents import get_agent, SUPPORTED_AGENTS, AGENTS
+from nexus.core.agents import get_agent, SUPPORTED_AGENTS
 from nexus.utils.console import (
     console,
     print_error,
@@ -61,7 +61,7 @@ def _resolve_scope_and_dir(
     agent_id: str,
     app_name: Optional[str],
     root: bool,
-) -> tuple:
+) -> tuple[str, Path]:
     """(scope, agent_dir) 튜플 반환. 유효성 검사도 포함."""
     if root and app_name:
         print_error("--root 와 --app 옵션을 동시에 사용할 수 없습니다.")
@@ -199,19 +199,10 @@ def agent_list(
             display_name = "(알 수 없음)"
 
         agent_dir = agents_base / agent_id
-        files = [
-            f.name for f in agent_dir.iterdir()
-            if f.is_file() and f.name != "agent.config.yaml"
-        ] + [
-            str(Path(rel) ) for rel in (AGENTS.get(agent_id).default_files.keys() if agent_id in AGENTS else [])
-            if (agent_dir / rel).exists()
-        ]
-        # Deduplicate and list actual files in the directory
         actual_files = []
         for item in sorted(agent_dir.rglob("*")):
             if item.is_file() and item.name != "agent.config.yaml":
                 actual_files.append(item.relative_to(agent_dir).as_posix())
-
         files_str = ", ".join(actual_files) if actual_files else "-"
         table.add_row(agent_id, display_name, files_str)
 
