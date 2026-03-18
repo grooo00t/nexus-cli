@@ -81,8 +81,9 @@ def _apply_sparse_checkout(submodule_path: Path, app_name: str) -> None:
 
 def _create_symlinks(
     project_path: Path, app_name: str, agent_ids: list[str]
-) -> None:
-    """에이전트별 상대 경로 심볼릭 링크 생성"""
+) -> list[str]:
+    """에이전트별 상대 경로 심볼릭 링크 생성. 생성된 link_target 목록 반환."""
+    created: list[str] = []
     for agent_id in agent_ids:
         try:
             agent_cfg = get_agent(agent_id)
@@ -110,6 +111,9 @@ def _create_symlinks(
 
         link_path.symlink_to(rel_target)
         print_success(f"  {agent_cfg.link_target} → {rel_target}")
+        created.append(agent_cfg.link_target)
+
+    return created
 
 
 # ── 명령어 ─────────────────────────────────────────────────────────────────────
@@ -196,15 +200,27 @@ def submodule_add(
         print_error(str(exc))
         raise typer.Exit(1)
 
-    # 심볼릭 링크 생성
+    # 심볼릭 링크 생성 + 프로젝트 레포에 커밋
     console.print()
-    _create_symlinks(project_path, app_name, agent_ids)
+    created_links = _create_symlinks(project_path, app_name, agent_ids)
+
+    if created_links:
+        try:
+            _run_git(["add"] + created_links, cwd=project_path)
+            _run_git(
+                ["commit", "-m", f"chore: add nexus submodule for {app_name}"],
+                cwd=project_path,
+            )
+            print_info(f"\n  심볼릭 링크 {len(created_links)}개를 프로젝트 레포에 커밋했습니다.")
+        except GitError as exc:
+            print_error(f"커밋 실패: {exc}")
+            raise typer.Exit(1)
 
     console.print()
     print_success(f"'{app_name}' submodule 설정 완료: {project_path}")
     print_info(
-        "팀원은 레포 클론 후 'nxs submodule init <app>' 을 실행하세요. "
-        "(sparse-checkout 및 심볼릭 링크 자동 설정)"
+        "팀원은 'git clone --recurse-submodules' 후 "
+        "'nxs submodule init <app>'으로 sparse-checkout을 적용하세요."
     )
 
 
@@ -214,11 +230,8 @@ def submodule_init(
     target: Path | None = typer.Option(
         None, "--target", "-t", help="프로젝트 경로 (기본: 현재 디렉토리)"
     ),
-    agent: str | None = typer.Option(
-        None, "--agent", help="특정 에이전트만 적용 (쉼표 구분: claude,gemini)"
-    ),
 ):
-    """클론 후 sparse-checkout 및 심볼릭 링크를 설정합니다. (팀원용)"""
+    """클론 후 sparse-checkout을 적용합니다. (팀원용)"""
     try:
         registry = _get_registry()
     except RegistryNotFoundError as exc:
@@ -252,7 +265,7 @@ def submodule_init(
         )
         raise typer.Exit(1)
 
-    # sparse-checkout 적용
+    # sparse-checkout 적용 (resolved/<app>/ 만 체크아웃)
     print_info(f"sparse-checkout 적용 중: resolved/{app_name}/")
     try:
         _apply_sparse_checkout(submodule_path, app_name)
@@ -260,13 +273,9 @@ def submodule_init(
         print_error(str(exc))
         raise typer.Exit(1)
 
-    # 심볼릭 링크 생성
-    agent_ids = _resolve_target_agents(registry, app_name, agent)
-    console.print()
-    _create_symlinks(project_path, app_name, agent_ids)
-
     console.print()
     print_success(f"'{app_name}' 초기화 완료: {project_path}")
+    print_info("심볼릭 링크는 레포에 이미 포함되어 있습니다.")
 
 
 @submodule_app.command("remove")

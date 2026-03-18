@@ -157,10 +157,11 @@ api-server/
 **팀원 (레포 클론 후):**
 
 ```bash
-git clone https://github.com/your-team/api-server.git
+# 심볼릭 링크는 레포에 이미 커밋되어 있어 별도 생성 불필요
+git clone --recurse-submodules https://github.com/your-team/api-server.git
 cd api-server
 
-# nexus CLI로 sparse-checkout + 심볼릭 링크 한 번에 설정
+# sparse-checkout 적용 (resolved/api-server/ 만 체크아웃)
 nxs submodule init api-server
 ```
 
@@ -179,7 +180,7 @@ flowchart LR
 ```bash
 # ~/.nexus/apps/api-server/agents/claude/ 파일 직접 수정 후
 nxs submodule add api-server --target /workspace/api-server
-# resolve → push → submodule ref 갱신
+# resolve → nexus push → submodule ref + 심볼릭 링크 커밋
 
 # 팀원은 프로젝트에서 반영
 git pull && git submodule update
