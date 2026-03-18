@@ -17,7 +17,7 @@ def registry_with_app(tmp_path, monkeypatch):
     monkeypatch.setattr(Registry, "NEXUSRC_PATH", nexusrc)
     monkeypatch.setattr(Registry, "DEFAULT_PATH", registry_path)
 
-    runner.invoke(app, ["init"])
+    runner.invoke(app, ["init", "--path", str(registry_path)])
     runner.invoke(app, ["app", "add", "web-frontend"])
     runner.invoke(app, ["agent", "add", "claude", "--app", "web-frontend"])
 

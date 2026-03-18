@@ -18,7 +18,7 @@ def initialized_registry(tmp_path, monkeypatch):
     monkeypatch.setattr(Registry, "DEFAULT_PATH", registry_path)
 
     # init으로 초기화
-    runner.invoke(app, ["init"])
+    runner.invoke(app, ["init", "--path", str(registry_path)])
     return Registry(registry_path)
 
 

@@ -47,7 +47,7 @@ def main(
 
 @app.command("init")
 def init_command(
-    path: Path | None = typer.Option(None, "--path", "-p", help="Registry 경로"),
+    path: Path | None = typer.Option(None, "--path", "-p", help="Registry 경로 (기본: 현재 디렉토리)"),
     from_repo: str | None = typer.Option(None, "--from-repo", help="Git 레포 URL에서 초기화"),
 ):
     """ConfHub Registry를 초기화합니다."""

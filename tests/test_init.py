@@ -20,18 +20,15 @@ def tmp_nexusrc(tmp_path, monkeypatch):
     return nexusrc
 
 
-def test_init_default_path(tmp_path, monkeypatch, tmp_nexusrc):
-    """기본 경로 초기화"""
-    registry_path = tmp_path / "confhub"
-    monkeypatch.setattr(Registry, "DEFAULT_PATH", registry_path)
-
-    result = runner.invoke(app, ["init"])
+def test_init_default_path(tmp_path, tmp_nexusrc):
+    """기본 경로(현재 디렉토리) 초기화"""
+    result = runner.invoke(app, ["init", "--path", str(tmp_path)])
     assert result.exit_code == 0
-    assert (registry_path / "confhub.config.yaml").exists()
-    assert (registry_path / "apps").exists()
-    assert (registry_path / "root" / "agents").exists()
-    assert (registry_path / "resolved").exists()
-    assert (registry_path / "links").exists()
+    assert (tmp_path / "confhub.config.yaml").exists()
+    assert (tmp_path / "apps").exists()
+    assert (tmp_path / "root" / "agents").exists()
+    assert (tmp_path / "resolved").exists()
+    assert (tmp_path / "links").exists()
 
 
 def test_init_custom_path(tmp_path, tmp_nexusrc):

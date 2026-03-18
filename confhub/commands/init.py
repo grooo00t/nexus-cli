@@ -106,8 +106,8 @@ def do_init(path: Path | None, from_repo: str | None) -> None:
         print_error("--from-repo 옵션은 Phase 7에서 지원될 예정입니다.")
         return
 
-    # 대상 경로 결정
-    registry_path = Path(path) if path is not None else Registry.DEFAULT_PATH
+    # 대상 경로 결정 (기본: 현재 디렉토리)
+    registry_path = Path(path) if path is not None else Path.cwd()
 
     # 이미 초기화된 경우 훅만 업데이트 후 종료
     registry = Registry(registry_path)

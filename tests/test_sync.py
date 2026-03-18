@@ -16,7 +16,7 @@ def initialized_registry(tmp_path, monkeypatch):
     registry_path = tmp_path / "confhub"
     monkeypatch.setattr(Registry, "NEXUSRC_PATH", nexusrc)
     monkeypatch.setattr(Registry, "DEFAULT_PATH", registry_path)
-    runner.invoke(app, ["init"])
+    runner.invoke(app, ["init", "--path", str(registry_path)])
     return Registry(registry_path)
 
 
