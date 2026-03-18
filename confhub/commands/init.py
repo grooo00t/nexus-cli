@@ -76,17 +76,32 @@ SETTINGS_JSON_TEMPLATE = {
 # ── 핵심 로직 ──────────────────────────────────────────────────────────────────
 
 
+def _find_git_root(path: Path) -> Path | None:
+    """주어진 경로에서 가장 가까운 git root를 찾습니다."""
+    import subprocess
+
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        cwd=str(path),
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return Path(result.stdout.strip())
+    return None
+
+
 def _install_pre_commit_hook(registry_path: Path) -> None:
     """Registry git 저장소에 pre-commit 훅을 설치합니다."""
     import subprocess
 
-    git_dir = registry_path / ".git"
-
-    # git 저장소가 없으면 초기화
-    if not git_dir.exists():
+    # 현재 경로의 git root를 찾거나, 없으면 git 초기화
+    git_root = _find_git_root(registry_path)
+    if git_root is None:
         subprocess.run(["git", "init", str(registry_path)], check=True, capture_output=True)
+        git_root = registry_path
 
-    hooks_dir = git_dir / "hooks"
+    hooks_dir = git_root / ".git" / "hooks"
     hooks_dir.mkdir(exist_ok=True)
 
     hook_file = hooks_dir / "pre-commit"
