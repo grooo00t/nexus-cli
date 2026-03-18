@@ -58,6 +58,12 @@ CLAUDE_MD_TEMPLATE = """\
 - 커밋 메시지: [타입]: [내용] 형식
 """
 
+PRE_COMMIT_HOOK_TEMPLATE = """\
+#!/bin/sh
+# ConfHub: 커밋 전 자동으로 resolved/ 를 최신 상태로 빌드합니다.
+confhub resolve --all && git add resolved/
+"""
+
 SETTINGS_JSON_TEMPLATE = {
     "model": "claude-sonnet-4-6",
     "permissions": {
@@ -68,6 +74,24 @@ SETTINGS_JSON_TEMPLATE = {
 
 
 # ── 핵심 로직 ──────────────────────────────────────────────────────────────────
+
+
+def _install_pre_commit_hook(registry_path: Path) -> None:
+    """Registry git 저장소에 pre-commit 훅을 설치합니다."""
+    import subprocess
+
+    git_dir = registry_path / ".git"
+
+    # git 저장소가 없으면 초기화
+    if not git_dir.exists():
+        subprocess.run(["git", "init", str(registry_path)], check=True, capture_output=True)
+
+    hooks_dir = git_dir / "hooks"
+    hooks_dir.mkdir(exist_ok=True)
+
+    hook_file = hooks_dir / "pre-commit"
+    hook_file.write_text(PRE_COMMIT_HOOK_TEMPLATE, encoding="utf-8")
+    hook_file.chmod(0o755)
 
 
 def do_init(path: Path | None, from_repo: str | None) -> None:
@@ -132,17 +156,22 @@ def do_init(path: Path | None, from_repo: str | None) -> None:
         with open(claude_dot_dir / "settings.json", "w", encoding="utf-8") as f:
             json.dump(SETTINGS_JSON_TEMPLATE, f, indent=2, ensure_ascii=False)
 
-        # ── [4/5] links/links.json 생성 ──────────────────────────────────────
-        print_info("[4/5] links/links.json 생성...")
+        # ── [4/6] links/links.json 생성 ──────────────────────────────────────
+        print_info("[4/6] links/links.json 생성...")
         with open(registry.links_file, "w", encoding="utf-8") as f:
             json.dump({}, f)
 
-        # ── [5/5] ~/.confhubrc 등록 ─────────────────────────────────────────────
-        print_info("[5/5] ~/.confhubrc에 경로 등록...")
+        # ── [5/6] git 초기화 및 pre-commit 훅 설치 ───────────────────────────
+        print_info("[5/6] git 초기화 및 pre-commit 훅 설치...")
+        _install_pre_commit_hook(registry_path)
+
+        # ── [6/6] ~/.confhubrc 등록 ─────────────────────────────────────────────
+        print_info("[6/6] ~/.confhubrc에 경로 등록...")
         Registry.save_nexusrc(registry_path)
 
         console.print()
         print_success(f"Registry 초기화 완료: {registry_path}")
+        print_info("apps/ 파일 수정 후 git commit 시 resolved/ 가 자동으로 갱신됩니다.")
 
     except PermissionError as exc:
         print_error(f"권한 오류: {exc}")
