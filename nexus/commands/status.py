@@ -2,6 +2,8 @@
 from pathlib import Path
 from typing import Optional
 
+import typer
+
 from nexus.core.registry import Registry, RegistryNotFoundError
 from nexus.core.linker import Linker
 from nexus.utils.git import GitRepo
@@ -51,7 +53,6 @@ def do_status(
         registry = _get_registry()
     except RegistryNotFoundError as exc:
         print_error(str(exc))
-        import typer
         raise typer.Exit(1)
 
     # Git 정보
@@ -73,7 +74,6 @@ def do_status(
         apps = [app_name] if registry.app_exists(app_name) else []
         if not apps:
             print_error(f"앱 '{app_name}'을 찾을 수 없습니다.")
-            import typer
             raise typer.Exit(1)
     else:
         apps = registry.list_apps()
