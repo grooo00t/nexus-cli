@@ -119,7 +119,7 @@ def submodule_add(
     agent_ids = _resolve_target_agents(registry, app_name, agent)
 
     # resolve 실행 (resolved/ 최신화)
-    print_info("설정 병합 중...")
+    print_info("[1/3] 설정 병합 중...")
     try:
         merger = ConfigMerger(registry.base_path)
         merger.resolve_app(app_name)
@@ -127,12 +127,23 @@ def submodule_add(
         print_error(f"resolve 실패: {exc}")
         raise typer.Exit(1)
 
+    # resolved/ 포함하여 nexus 레포 push
+    print_info(f"[2/3] resolved/ 를 remote에 push 중: {remote_url}")
+    try:
+        sha = nexus_repo.commit_all(f"chore: resolve {app_name}")
+        if sha:
+            print_info(f"      커밋: {sha[:8]}")
+        nexus_repo.push()
+    except GitError as exc:
+        print_error(f"push 실패: {exc}")
+        raise typer.Exit(1)
+
+    print_info("[3/3] git submodule 추가 중...")
     # submodule 추가
     submodule_path = project_path / SUBMODULE_DIR
     if submodule_path.exists():
         print_warning(f"'{SUBMODULE_DIR}'이 이미 존재합니다. submodule 추가를 건너뜁니다.")
     else:
-        print_info(f"git submodule 추가 중: {remote_url}")
         try:
             _run_git(["submodule", "add", remote_url, SUBMODULE_DIR], cwd=project_path)
         except GitError as exc:
