@@ -1,7 +1,6 @@
 """Registry 클래스 단위 테스트"""
 import pytest
 from pathlib import Path
-import tempfile
 import yaml
 
 from nexus.core.registry import Registry, RegistryNotFoundError

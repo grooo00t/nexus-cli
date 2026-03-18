@@ -2,8 +2,6 @@
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich import print as rprint
-from typing import Optional
 
 console = Console()
 error_console = Console(stderr=True)
