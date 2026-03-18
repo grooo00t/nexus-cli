@@ -146,14 +146,13 @@ nxs submodule add api-server --target /workspace/api-server
 
 ```
 api-server/
-├── .nexus-config/                        ← nexus-config 레포 (sparse-checkout)
-│   └── resolved/
-│       └── api-server/                   ← 이 앱 설정만 체크아웃
-│           └── claude/
-│               └── .claude/
-├── .claude -> .nexus-config/resolved/api-server/claude/.claude
+├── .nexus-config/    ← nexus-config submodule (resolved/api-server/ 만 sparse-checkout)
+├── .claude/          ← symlink → .nexus-config/resolved/api-server/claude/.claude/
+├── .gemini/          ← symlink → .nexus-config/resolved/api-server/gemini/.gemini/
 └── ...
 ```
+
+개발자는 `.claude/`, `.gemini/` 등 프로젝트 루트의 심볼릭 링크만 사용하면 됩니다. `.nexus-config/` 내부 구조는 신경 쓸 필요 없습니다.
 
 **팀원 (레포 클론 후):**
 
