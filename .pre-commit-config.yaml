@@ -1,0 +1,24 @@
+repos:
+  # ty: Astral Python type checker
+  - repo: https://github.com/astral-sh/ty
+    rev: 0.0.0-alpha.8
+    hooks:
+      - id: ty-check
+
+  # ruff: fast Python linter & formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # pytest: run tests before commit
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest tests/ --tb=short -q
+        language: system
+        pass_filenames: false
+        always_run: true

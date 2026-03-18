@@ -22,6 +22,8 @@ nxs = "nexus.cli:app"
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    "pre-commit>=3.0",
+    "ruff>=0.9.0",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -34,3 +36,14 @@ addopts = "-v"
 [tool.coverage.run]
 source = ["nexus"]
 omit = ["tests/*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["nexus"]
