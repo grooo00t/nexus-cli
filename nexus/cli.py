@@ -8,6 +8,7 @@ from nexus import __version__
 from nexus.commands import agent as agent_cmd
 from nexus.commands import app as app_cmd
 from nexus.commands.link import link_app
+from nexus.commands.submodule import submodule_app
 from nexus.commands.sync import sync_app
 
 app = typer.Typer(
@@ -19,6 +20,7 @@ app = typer.Typer(
 app.add_typer(app_cmd.app, name="app")
 app.add_typer(agent_cmd.app, name="agent")
 app.add_typer(link_app, name="link")
+app.add_typer(submodule_app, name="submodule")
 app.add_typer(sync_app, name="sync")
 
 

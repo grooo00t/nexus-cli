@@ -52,7 +52,7 @@ uv tool run ty check nexus/
 │               └── .claude/
 │                   ├── CLAUDE.md
 │                   └── settings.json
-├── resolved/          # .gitignore 대상, nxs resolve로 자동 생성
+├── resolved/          # nxs resolve로 자동 생성, 레포에 커밋 대상
 │   └── web-frontend/
 │       └── claude/
 │           └── .claude/
@@ -80,6 +80,8 @@ nxs agent show/list/remove <agent> --app <app>|--root
 nxs resolve <app> / --all / --dry-run
 nxs link <app> [--target PATH] [--agent claude,gemini]
 nxs unlink <app>
+nxs submodule add <app> [--target PATH] [--agent claude,gemini]
+nxs submodule remove <app> [--target PATH] [--agent claude,gemini] [--keep-submodule]
 nxs sync push [--message MSG] / pull / remote set <url>
 nxs status [--app NAME] [--with-links]
 nxs install [--from-repo URL] [--verify] [--apps app1,app2]
